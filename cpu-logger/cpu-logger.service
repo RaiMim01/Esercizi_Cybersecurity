@@ -1,0 +1,11 @@
+[Unit]
+Description=CPU logger service
+
+[Service]
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/home/miriam.rai/Desktop/cpu-logger
+ExecStart=/home/miriam.rai/Desktop/cpu-logger/.venv/bin/python3 app.py --interval 5
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
