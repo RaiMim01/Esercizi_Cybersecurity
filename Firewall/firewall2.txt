@@ -1,0 +1,36 @@
+# first and last name: Miriam Raimondi
+# serial number: 176474
+
+#iptables prima di ogni riga
+# Esempio completo
+
+# Svuota tutte le catene nella filter tabella
+-F
+
+# Imposta una policy per rendere DROP la destinazione 
+# predefinita per INPUT e FORWARD le catene nella filter 
+-P INPUT DROP
+-P FORWARD DROP
+
+# traffico TCP che ha senso consentire al firewall (10.1.1.1) è SSH, che è utile per la gestione del firewall stesso
+-A INPUT -i eth0 -d 10.1.1.1 -p tcp --dport 22 -j ACCEPT
+
+# Consentire le richieste di eco ICMP al firewall per la rete interna.
+# Questo consente agli host nella 10.1.1.0/24subnet di accedere al pingloro gateway 
+-A INPUT -i eth0 -d 10.1.1.0 -p icmp --icmp-type 8 -j ACCEPT
+
+# La rete interna è considerata attendibile. Pertanto,
+# il firewall deve consentire tutte le connessioni che provengono dall'interno della rete interna
+-A FORWARD -i eth0 -j ACCEPT
+
+# Poiché la rete interna utilizza un intervallo di indirizzi IP privati ​​(ad esempio, 10.1.1.0/24),
+# è necessario NAT affinché le connessioni in uscita siano instradabili sulla rete Internet pubblica
+-t nat -A POSTROUTING -o eth1 -j SNAT --to-source 128.138.101.4
+
+# È anche auspicabile che quando qualcuno dalla rete interna apre una connessione, possa ricevere la risposta
+-A FORWARD -m conntrack --ctstate ESTABLISHED, RELATED -j ACCEPT
+
+# Supponiamo che ci sia un server web con IP 10.1.1.2e che il firewall debba consentire SSH, HTTP e HTTPS
+-A FORWARD -d 10.1.1.2 -p tcp --dport 22 -j ACCEPT
+-A FORWARD -d 10.1.1.2 -p tcp --dport 80 -j ACCEPT
+-A FORWARD -d 10.1.1.2 -p tcp --dport 443 -j ACCEPT

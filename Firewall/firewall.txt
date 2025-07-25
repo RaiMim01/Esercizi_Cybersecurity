@@ -1,0 +1,32 @@
+# first and last name: Miriam Raimondi
+# serial number: 176474
+
+#iptables prima di ogni riga 
+
+# Elimina tutte le regole in filter e nat table
+-F 
+-t nat -F
+
+# Drop everything unless explicitly allowed
+-P INPUT DROP 
+-P FORWARD DROP
+
+# Allow ICMP packets received on eth0 and eth1
+-A INPUT -i eth0 -p icmp -j ACCEPT
+-A INPUT -i eth1 -P icmp -j ACCEPT
+
+# Allow SSH packets (tcp/22) received on eth1
+-A INPUT -i eth1 -p tcp --dport 22 -j ACCEPT
+
+# Allow all packets received on eth1
+-A FORWARD -i eth1 -j ACCEPT
+
+# Allow ESTABLISHED,RELATED packets
+-A FORWARD -m conntrack --cstate ESTABLISHED,RELATED -j ACCEPT
+
+# SNAT for packets to be sent on eth0 so that private hosts get replies from the Internet
+-t nat -A POSTROUTING -o eth0 -j SNAT --to-source 93.184.216.32
+
+# DNAT for HTTP packets (tcp/80) received on eth0 to 10.10.10.2:30080
+-t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 10.10.10.2:30080
+-A FARWARD -i eth0 -o eth1 -p tcp -d 10.10.10.2 --dport 30080 -j ACCEPT
