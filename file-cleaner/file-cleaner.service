@@ -1,0 +1,13 @@
+# first and last name: Miriam Raimondi
+# serial number:176474
+#
+# path: /home/miriam.rai/file-cleaner
+
+[Unit]
+Dersciption=File Cleaner Service
+
+
+[Service]
+Evironment=PYTHONUNBUFFERED=1
+WorkingDirectory=%h/file-cleaner
+ExecStart=/usr/local/bin/python3 app.py --path %h/file-cleaner/myapp --extension .tmp

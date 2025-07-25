@@ -1,0 +1,17 @@
+# first and last name: Miriam Raimondi
+# serial number: 176474
+#
+# path: /home/miriam.rai/file-cleaner/file_cleaner.timer
+# 
+# command to enable the timer: systemctl --user enable file-cleaner.timer
+# command to start the timer: systemctl --user start file-cleaner.timer
+
+[Unit]
+Dersciption=File Cleaner timer
+
+[Timer]
+Unit=file-cleaner.service
+OnCalendar=Mon..Fri *-*-* *:00/10
+
+[Install]
+WantedBy=timers.target
