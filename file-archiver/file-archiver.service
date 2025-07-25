@@ -1,0 +1,12 @@
+# nome e cognome: Miriam Raimondi
+# matricola: 176474
+#
+# path: /home/miriam.rai/.config/systemd/user/file-archiver.service
+
+[Unit]
+Description=File Archiver Service
+
+[Service]
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/home/miriam.rai/file-archiver
+ExecStart=/usr/local/bin/python3 app.py --path %h/mydocs  --seconds 30

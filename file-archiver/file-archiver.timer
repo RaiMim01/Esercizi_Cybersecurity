@@ -1,0 +1,17 @@
+# first and last name:Miriam Raimondi
+# serial number: 176474
+#
+# path: /home/miriam.rai/.config/systemd/user/file-archiver.timer
+#
+# comando per abilitare il timer: systemctl --user enable file-archiver.timer
+# comando per avviare il timer: systemctl --user start file-archiver.timer
+
+[Unit]
+Description=File Archivier Timer
+
+[Timer]
+Unit=file-archiver.service
+OnCalendar=Sat,Sun *-*-* 04:00
+
+[Install]
+WantedBy=timers.target
